@@ -5,12 +5,21 @@ import java.util.List;
 
 import com.loopj.android.image.SmartImageView;
 
+import twitter4j.DirectMessage;
 import twitter4j.ResponseList;
+import twitter4j.StallWarning;
 import twitter4j.Status;
+import twitter4j.StatusDeletionNotice;
+import twitter4j.StatusListener;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.TwitterStream;
+import twitter4j.User;
+import twitter4j.UserList;
+import twitter4j.UserStreamListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
@@ -28,6 +37,7 @@ public class MainActivity extends ListActivity {
 
 	private TweetAdapter mAdapter;
 	private Twitter mTwitter;
+	private TwitterStream mTwitterStream;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +51,17 @@ public class MainActivity extends ListActivity {
 			mAdapter = new TweetAdapter(this);
 			setListAdapter(mAdapter);
 			
-			mTwitter = TwitterUtils.getTwitterInstance(this);
+			mTwitter       = TwitterUtils.getTwitterInstance(this);
+			mTwitterStream = TwitterUtils.getTwitterSteamInstance(this);
 			reloadTimeLine();
 		}
+	}
+	
+	@Override
+	protected void onStop(){
+		super.onStop();
+		
+		mTwitterStream.shutdown();
 	}
 
 	@Override
@@ -62,6 +80,12 @@ public class MainActivity extends ListActivity {
 		case R.id.menu_tweet:
 			Intent intent = new Intent(this, TweetActivity.class);
 			startActivity(intent);
+			return true;
+		case R.id.menu_stream:
+			streamTimeLine();
+			return true;
+		case R.id.menu_stop_stream:
+			stopStream();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -93,6 +117,165 @@ public class MainActivity extends ListActivity {
 			}
 		};
 		task.execute();
+	}
+	
+	private void stopStream(){
+		mTwitterStream.shutdown();
+		showToast("Stop streaming");
+	}
+	private void streamTimeLine() {
+		UserStreamListener listener = new UserStreamListener() {
+
+			@Override
+			public void onDeletionNotice(StatusDeletionNotice arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onScrubGeo(long arg0, long arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onStallWarning(StallWarning arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onStatus(final Status status) {
+				
+				runOnUiThread(new Runnable(){
+					
+					@Override
+					public void run(){
+						mAdapter.insert(status,0);
+						mAdapter.notifyDataSetChanged();
+					}
+				});
+				System.out.println(status.getUser().getScreenName() + ":" + status.getText());
+					
+			}
+
+			@Override
+			public void onTrackLimitationNotice(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onException(Exception arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onBlock(User arg0, User arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onDeletionNotice(long arg0, long arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onDirectMessage(DirectMessage arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onFavorite(User arg0, User arg1, Status arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onFollow(User arg0, User arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onFriendList(long[] arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onUnblock(User arg0, User arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onUnfavorite(User arg0, User arg1, Status arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onUserListCreation(User arg0, UserList arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onUserListDeletion(User arg0, UserList arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onUserListMemberAddition(User arg0, User arg1,
+					UserList arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onUserListMemberDeletion(User arg0, User arg1,
+					UserList arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onUserListSubscription(User arg0, User arg1,
+					UserList arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onUserListUnsubscription(User arg0, User arg1,
+					UserList arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onUserListUpdate(User arg0, UserList arg1) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onUserProfileUpdate(User arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+	    };
+		
+		mTwitterStream.addListener(listener);
+		mTwitterStream.user();
+		showToast("Stream start");
 	}
 	
 	private void showToast(String text){

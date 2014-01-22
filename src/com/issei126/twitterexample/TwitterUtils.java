@@ -2,6 +2,8 @@ package com.issei126.twitterexample;
 
 import twitter4j.Twitter;
 import twitter4j.TwitterFactory;
+import twitter4j.TwitterStream;
+import twitter4j.TwitterStreamFactory;
 import twitter4j.auth.AccessToken;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -31,6 +33,27 @@ public class TwitterUtils {
             twitter.setOAuthAccessToken(loadAccessToken(context));
         }
         return twitter;
+    }
+    
+    /**
+     * TwitterStream インスタンスを取得。アクセルトークンが保存されていれば自動的にセット
+     * 
+     * @param context
+     * @return 
+     */
+    
+    public static TwitterStream getTwitterSteamInstance(Context context) {
+    	 String consumerKey = context.getString(R.string.twitter_consumer_key);
+        String consumerSecret = context.getString(R.string.twitter_consumer_secret);
+
+        TwitterStreamFactory streamFactory = new TwitterStreamFactory();
+        TwitterStream twitterStream = streamFactory.getInstance();
+        twitterStream.setOAuthConsumer(consumerKey, consumerSecret);
+
+        if (hasAccessToken(context)) {
+            twitterStream.setOAuthAccessToken(loadAccessToken(context));
+        }
+        return twitterStream;
     }
 
     /**

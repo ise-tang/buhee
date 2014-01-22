@@ -23,7 +23,9 @@ public final class R {
     public static final class drawable {
         public static final int ic_launcher=0x7f020000;
         public static final int pen=0x7f020001;
-        public static final int rotate=0x7f020002;
+        public static final int play=0x7f020002;
+        public static final int rotate=0x7f020003;
+        public static final int stop=0x7f020004;
     }
     public static final class id {
         public static final int action_start_oauth=0x7f080002;
@@ -31,6 +33,8 @@ public final class R {
         public static final int icon=0x7f080003;
         public static final int input_text=0x7f080001;
         public static final int menu_refresh=0x7f080007;
+        public static final int menu_stop_stream=0x7f08000a;
+        public static final int menu_stream=0x7f080009;
         public static final int menu_tweet=0x7f080008;
         public static final int name=0x7f080004;
         public static final int screen_name=0x7f080005;
@@ -50,6 +54,8 @@ public final class R {
         public static final int app_name=0x7f050000;
         public static final int hello_world=0x7f050002;
         public static final int menu_refresh=0x7f050007;
+        public static final int menu_stop_stream=0x7f05000a;
+        public static final int menu_stream=0x7f050009;
         public static final int menu_tweet=0x7f050008;
         public static final int twitter_callback_url=0x7f050006;
         public static final int twitter_consumer_key=0x7f050003;
