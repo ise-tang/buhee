@@ -41,9 +41,13 @@ public class MainActivity extends ListActivity {
 	
 	private boolean mStreamEnabled = false;
 	
+	private String myScreenName;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		
 		
 		if (!TwitterUtils.hasAccessToken(this)){
 			Intent intent = new Intent(this, TwitterOAuthActivity.class);
@@ -55,15 +59,31 @@ public class MainActivity extends ListActivity {
 			
 			mTwitter       = TwitterUtils.getTwitterInstance(this);
 			mTwitterStream = TwitterUtils.getTwitterSteamInstance(this);
+			
+			AsyncTask<Void, Void, Void> task = new AsyncTask<Void, Void, Void>(){
+				protected Void doInBackground(Void... params){
+					try {
+						myScreenName = mTwitter.verifyCredentials().getScreenName();
+					} catch (TwitterException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					return null;
+				}
+			};
+			task.execute();
+			
 			streamTimeLine();
 		}
+		
+		
 	}
 	
 	@Override
 	protected void onDestroy(){
 		super.onDestroy();
 		
-		mTwitterStream.shutdown();
+		stopStream();
 	}
 
 	@Override
@@ -157,6 +177,14 @@ public class MainActivity extends ListActivity {
 					public void run(){
 						mAdapter.insert(status,0);
 						mAdapter.notifyDataSetChanged();
+						
+						if(status.isRetweet()){
+							String authorName = status.getRetweetedStatus().getUser().getScreenName();
+							System.out.println(authorName);
+							if(authorName.equals(myScreenName)){
+								showToast("公式RTされたよ！！！");
+							}
+						}
 					}
 				});
 				System.out.println(status.getUser().getScreenName() + ":" + status.getText());
