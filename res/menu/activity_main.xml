@@ -12,19 +12,5 @@
         android:orderInCategory="200"
         android:showAsAction="always"
         android:title="@string/menu_tweet"/>
-    
-    <item
-        android:id="@+id/menu_stream"
-        android:icon="@drawable/play"
-        android:orderInCategory="300"
-        android:showAsAction="always"
-        android:title="@string/menu_stream"/>
-    
-    <item
-        android:id="@+id/menu_stop_stream"
-        android:icon="@drawable/stop"
-        android:orderInCategory="400"
-        android:showAsAction="always"
-        android:title="@string/menu_stop_stream"/>
 
 </menu>

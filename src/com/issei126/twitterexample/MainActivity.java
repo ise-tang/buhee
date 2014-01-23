@@ -6,11 +6,9 @@ import java.util.List;
 import com.loopj.android.image.SmartImageView;
 
 import twitter4j.DirectMessage;
-import twitter4j.ResponseList;
 import twitter4j.StallWarning;
 import twitter4j.Status;
 import twitter4j.StatusDeletionNotice;
-import twitter4j.StatusListener;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 import twitter4j.TwitterStream;
@@ -19,7 +17,6 @@ import twitter4j.UserList;
 import twitter4j.UserStreamListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
@@ -39,6 +36,11 @@ public class MainActivity extends ListActivity {
 	private Twitter mTwitter;
 	private TwitterStream mTwitterStream;
 	
+	private MenuItem mStartStream;
+	private MenuItem mStopStream;
+	
+	private boolean mStreamEnabled = false;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -53,7 +55,7 @@ public class MainActivity extends ListActivity {
 			
 			mTwitter       = TwitterUtils.getTwitterInstance(this);
 			mTwitterStream = TwitterUtils.getTwitterSteamInstance(this);
-			reloadTimeLine();
+			streamTimeLine();
 		}
 	}
 	
@@ -68,8 +70,15 @@ public class MainActivity extends ListActivity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.activity_main, menu);
+		//toggleStreamMenu();
 		return true;
 	}
+	
+	@Override public boolean onPrepareOptionsMenu(Menu menu) {
+		super.onPrepareOptionsMenu(menu);
+		
+		return true;
+	};
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item){
@@ -81,15 +90,10 @@ public class MainActivity extends ListActivity {
 			Intent intent = new Intent(this, TweetActivity.class);
 			startActivity(intent);
 			return true;
-		case R.id.menu_stream:
-			streamTimeLine();
-			return true;
-		case R.id.menu_stop_stream:
-			stopStream();
-			return true;
 		}
 		return super.onOptionsItemSelected(item);
 	}
+	
 
 	private void reloadTimeLine(){
 		AsyncTask<Void, Void, List<twitter4j.Status>> task = new AsyncTask<Void, Void, List<twitter4j.Status>>(){
@@ -281,6 +285,8 @@ public class MainActivity extends ListActivity {
 	private void showToast(String text){
 		Toast.makeText(this, text, Toast.LENGTH_SHORT).show();
 	}
+	
+
 	
 	private class TweetAdapter extends ArrayAdapter<twitter4j.Status> {
 			
