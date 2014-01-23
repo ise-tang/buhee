@@ -60,8 +60,8 @@ public class MainActivity extends ListActivity {
 	}
 	
 	@Override
-	protected void onStop(){
-		super.onStop();
+	protected void onDestroy(){
+		super.onDestroy();
 		
 		mTwitterStream.shutdown();
 	}
@@ -195,7 +195,13 @@ public class MainActivity extends ListActivity {
 
 			@Override
 			public void onFavorite(User arg0, User arg1, Status arg2) {
-				// TODO Auto-generated method stub
+					runOnUiThread(new Runnable(){
+					
+					@Override
+					public void run(){
+						showToast("ふぁぼられた！！！");
+					}
+				});
 				
 			}
 
