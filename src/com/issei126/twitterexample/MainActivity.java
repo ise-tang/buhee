@@ -52,7 +52,7 @@ public class MainActivity extends ListActivity {
 		if (!TwitterUtils.hasAccessToken(this)){
 			Intent intent = new Intent(this, TwitterOAuthActivity.class);
 			startActivity(intent);
-			finish();
+			//finish();
 		} else {
 			mAdapter = new TweetAdapter(this);
 			setListAdapter(mAdapter);
